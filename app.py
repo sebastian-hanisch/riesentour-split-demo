@@ -68,6 +68,21 @@ Weiter unten: **🔬 Der Hilfsgraph**, **🔬 Split gegen „Füllen bis voll“
 """
 )
 
+# erklaerseite:einfach:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/riesentour-split-erklaert.json, nicht von Hand ändern)
+with st.expander("💬 In einfachen Worten"):
+    st.markdown(
+        """
+Eine **Riesentour** ist eine einzige Reihenfolge aller Kunden, ohne Rücksicht auf Fahrzeuge. Der **Split** schneidet diese Liste an den besten Stellen in Fahrten, sodass jede Fahrt in ein Fahrzeug passt. Die beste Art zu schneiden findet man ohne Probieren: als kürzesten Weg durch ein kleines Netz von Abkürzungen.
+
+Hängt man die Fahrten irgendeines guten Plans hintereinander, entsteht eine Liste, die der Split mindestens so gut zerlegt. Das beste Ergebnis steckt also in einer Liste, nur trifft eine Liste es selten. Und die kürzeste Rundreise durch alle Kunden ist als Liste meist keine gute Wahl.
+
+Die Demo zählt für bis zu acht Kunden alle Listen durch und vergleicht mit dem besten Plan, den man überhaupt bilden kann.
+
+[Ausführlich und verständlich erklärt, mit Fachteil](https://sebastianhanisch.net/riesentour-split-erklaert.html)
+        """
+    )
+# erklaerseite:einfach:end
+
 with st.expander("So funktioniert Riesentour und Split", expanded=True):
     st.markdown(
         """
@@ -224,6 +239,7 @@ with st.expander("⚠️ Annahmen, Grenzen und bekannte Probleme"):
 st.markdown("---")
 
 with st.expander("📐 Mathematische Formulierung"):
+    # erklaerseite:lesehilfe:start (erzeugt von tools/set_demo_explainer.py (Website-Repo) aus tools/content/explainers/riesentour-split-erklaert.json, nicht von Hand ändern)
     st.markdown(
         r"""
 **Lesehilfe.** Gegeben sind ein Depot, $n$ Kunden mit Nachfragen und eine Fahrzeugkapazität. Gesucht ist ein Tourenplan mit kleinster Gesamtlänge, bei dem jede Route höchstens die Kapazität trägt.
@@ -237,6 +253,12 @@ with st.expander("📐 Mathematische Formulierung"):
 | $c(i, j)$ | Länge der Route, die die Kunden $\pi_{i+1}, \dots, \pi_j$ bedient |
 | $k$, $j^{*}$ | Zahl der Routen einer Lösung, davon die mit mindestens zwei Kunden |
 
+[Schritt für Schritt erklärt, mit Herleitung und Literatur](https://sebastianhanisch.net/riesentour-split-erklaert.html#fachleute)
+        """
+    )
+    # erklaerseite:lesehilfe:end
+    st.markdown(
+        r"""
 **Route.** Für die Kunden $\pi_{i+1}, \dots, \pi_j$ in dieser Reihenfolge ist
 $$c(i, j) = d(0, \pi_{i+1}) + \sum_{t = i+1}^{j-1} d(\pi_t, \pi_{t+1}) + d(\pi_j, 0), \qquad \text{zulässig, wenn } \sum_{t=i+1}^{j} q_{\pi_t} \le Q.$$
 
