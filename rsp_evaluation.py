@@ -198,7 +198,7 @@ def verdict_count(a: Analysis) -> tuple[str, str]:
     j = sum(1 for r in a.exact.routes if len(r) >= 2)
     share = pct(share_percent(a.n_opt, a.n_orders), 3)
     base = f"{num(a.n_opt)} von {num(a.n_orders)} Reihenfolgen ({share}) ergeben nach dem Split das Optimum. "
-    formula = f"Eine Lösung mit {routes_word(k)}, davon {j} mit mindestens zwei Kunden, entsteht aus {k}!·2^{j} = {num(a.formula)} Reihenfolgen. "
+    formula = f"Eine Lösung mit {routes_word(k)}, davon {j} mit mindestens zwei Kunden, lässt sich auf {k}!·2^{j} = {num(a.formula)} Arten hintereinanderhängen. "
     if a.n_opt == a.formula:
         return "success", base + formula + "Die Zahlen stimmen überein: Die optimale Lösung ist eindeutig."
     if a.n_opt > a.formula:

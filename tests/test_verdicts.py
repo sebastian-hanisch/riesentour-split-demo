@@ -76,7 +76,7 @@ def test_fill_verdict_names_the_extra_cost_and_the_reversed_reading():
 def test_count_verdict_unique_optimum():
     kind, text = ev.verdict_count(_a())
     assert kind == "success"
-    assert "4 von 720 Reihenfolgen (0,556 %)" in text and "mit 2 Routen, davon 1 mit mindestens zwei Kunden, entsteht aus 2!·2^1 = 4 Reihenfolgen" in text
+    assert "4 von 720 Reihenfolgen (0,556 %)" in text and "mit 2 Routen, davon 1 mit mindestens zwei Kunden, lässt sich auf 2!·2^1 = 4 Arten hintereinanderhängen" in text
     assert "eindeutig" in text
 
 

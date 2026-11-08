@@ -60,7 +60,7 @@ with st.container(key="kopf"):
 st.markdown(
     """
 **Muss man Routen suchen, oder genügt eine Reihenfolge?** Eine **Riesentour** ist eine Reihenfolge aller Kunden, ohne Rücksicht auf die Fahrzeugkapazität.
-Der **Split** zerlegt sie auf einem kleinen Graphen per kürzestem Weg optimal in Routen. Zu jeder Tourenlösung gibt es Riesentouren, deren Split genau diese Lösung ergibt:
+Der **Split** zerlegt sie auf einem kleinen Graphen per kürzestem Weg optimal in Routen. Zur optimalen Lösung gibt es Riesentouren, deren Split genau so teuer ist:
 Das Optimum liegt also unter den Reihenfolgen. Die Demo zählt alle Reihenfolgen durch, zeigt, **wie selten** das Optimum dort ist, und prüft, ob die **kürzeste Rundreise** eine gute Riesentour ist.
 
 Weiter unten: **🔬 Der Hilfsgraph**, **🔬 Split gegen „Füllen bis voll“**, **🔬 Alle Riesentouren**, **🔬 Von der Lösung zur Reihenfolge**, **🔬 Wie oft ist die Rundreise gut?**,
@@ -94,7 +94,7 @@ with st.sidebar:
                           help="„Kleine Karte“: ganze Koordinaten 0 bis 16, Nachfragen 1 bis 4. Die beiden anderen: Karte 0 bis 100, Nachfragen 1 bis 10; „In Gruppen“: drei Häufungen von Kunden.")
     depot = st.selectbox("Lage des Depots", list(range(len(C.DEPOTS))), key="depot_select", format_func=lambda i: C.DEPOTS[i])
     routes = st.slider("Zielroutenzahl", *bounds("routes_slider"), key="routes_slider",
-                       help=f"Legt die Kapazität fest: Gesamtnachfrage geteilt durch (Zielroutenzahl mal {C.FILL}), aufgerundet. Die optimale Lösung kann mehr Routen fahren.")
+                       help=f"Legt die Kapazität fest: Gesamtnachfrage geteilt durch (Zielroutenzahl mal {C.FILL}), aufgerundet, mindestens die größte Einzelnachfrage. Die optimale Lösung kann mehr Routen fahren.")
     seed = st.number_input("Zufalls-Seed der Instanz", *bounds("seed_input"), key="seed_input", step=1)
     st.button("🎲 Neue Instanz generieren", width="stretch", on_click=randomize_seed)
     st.markdown("**Riesentour**")
@@ -183,7 +183,7 @@ st.markdown(
 kind, text = verdict_dominance(a)
 getattr(st, kind)(text)
 st.caption("Das ist kein Beweis, sondern die Probe an dieser Instanz. Der Gedanke dahinter: Der Split sucht über alle Zerlegungen, auch über die, mit der man die Reihenfolge gebaut hat, "
-           "also kann er nicht schlechter sein. Dieselbe Lösung entsteht aus allen Reihenfolgen, die die Routen in anderer Folge oder Richtung hintereinanderhängen.")
+           "also kann er nicht schlechter sein. Dieselben Kosten entstehen aus allen Reihenfolgen, die die Routen in anderer Folge oder Richtung hintereinanderhängen.")
 
 st.markdown("---")
 
@@ -247,7 +247,7 @@ Der Graph ist azyklisch (alle Bögen laufen nach rechts), die Rekursion rechnet 
 **Dominanz.** Sei $R_1, \dots, R_k$ ein beliebiger zulässiger Tourenplan und $\pi$ die Aneinanderreihung der Routen. Dann ist der Weg, der jede Route $R_r$ als einen Bogen nimmt, ein Weg von $0$ nach $n$ mit den Kosten des Plans; also gilt $\mathrm{Split}(\pi) \le \sum_r \mathrm{Länge}(R_r)$.
 Gilt dies für einen optimalen Plan, so ist $\min_{\pi} \mathrm{Split}(\pi)$ gleich dem Optimum (jede Reihenfolge liefert ohnehin einen zulässigen Plan, also nie weniger).
 
-**Zählung.** Eine Lösung mit $k$ Routen, von denen $j^{*}$ mindestens zwei Kunden haben, entsteht aus genau $k! \cdot 2^{j^{*}}$ Reihenfolgen: $k!$ Folgen der Routen, und jede Route mit mindestens zwei Kunden in zwei Richtungen. Das gilt für die Aneinanderreihung der Routen; ob weitere Reihenfolgen dieselben Kosten ergeben, zeigt die Aufzählung (bei Gleichständen mehr).
+**Zählung.** Eine Lösung mit $k$ Routen, von denen $j^{*}$ mindestens zwei Kunden haben, lässt sich auf genau $k! \cdot 2^{j^{*}}$ Arten hintereinanderhängen: $k!$ Folgen der Routen, und jede Route mit mindestens zwei Kunden in zwei Richtungen. Das gilt für die Aneinanderreihung der Routen; ob weitere Reihenfolgen dieselben Kosten ergeben, zeigt die Aufzählung (bei Gleichständen mehr).
 
 **Literatur.** Die Idee, erst eine Riesentour zu bilden und sie dann in Routen zu zerlegen („route first, cluster second“), geht laut Sekundärquellen auf Beasley (1983) zurück; Prins (2004) hat den Split auf dem azyklischen Hilfsgraphen in einem memetischen Algorithmus verwendet. Diese Quellen wurden nicht im Volltext geprüft; die Demo übernimmt keine Zahl daraus, alle Zahlen sind Messungen an den Instanzen der Demo.
         """

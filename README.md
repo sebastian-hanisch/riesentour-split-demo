@@ -20,7 +20,7 @@ Ein Depot, n Kunden mit ganzzahliger Nachfrage, beliebig viele gleiche Fahrzeuge
 - **Exaktes Optimum** (`exact_cvrp`): beste Route je Kundenmenge per Held–Karp, dann Mengenzerlegung über alle Teilmengen (höchstens 2^9 Mengen).
 - **Kürzeste Rundreise** (`tsp_tour`): Held–Karp über Depot und alle Kunden, in der lexikographisch kleineren Richtung gelesen.
 - **Füllen bis voll** (`fill_until_full`): neue Route, sobald der nächste Kunde nicht mehr passt; schaut nie auf Entfernungen.
-- **Instanzen:** drei Kartenarten (kleine Karte mit ganzen Koordinaten 0 bis 16; zufällig verteilt 0 bis 100; drei Häufungen), Depot in der Mitte oder in der Ecke, Kapazität aus der Zielroutenzahl (Gesamtnachfrage / (Zielroutenzahl · 0,9), aufgerundet).
+- **Instanzen:** drei Kartenarten (kleine Karte mit ganzen Koordinaten 0 bis 16; zufällig verteilt 0 bis 100; drei Häufungen), Depot in der Mitte oder in der Ecke, Kapazität aus der Zielroutenzahl (Gesamtnachfrage / (Zielroutenzahl · 0,9), aufgerundet, mindestens die größte Einzelnachfrage).
 - **Fünf Experimente:** Hilfsgraph von Hand, Split gegen „Füllen bis voll“, alle Riesentouren, von der Lösung zur Reihenfolge, Bänder über feste Instanzen.
 
 ## Befunde (gemessen, keine Behauptungen)
@@ -29,18 +29,18 @@ Alle Zahlen sind Messungen an den Instanzen dieser Demo (feste Seeds), nachgerec
 
 | Frage | Befund |
 |---|---|
-| Liegt das Optimum unter den Reihenfolgen? | Ja: Das Minimum über alle n! Reihenfolgen ist in **80 von 80** Instanzen bei n = 8 und in **80 von 80** bei n = 9 gleich dem exakten Optimum (je 4 Zellen × 20 Instanzen). Unabhängig bestätigt gegen eine Aufzählung aller Zerlegungen und Reihenfolgen (`tests/test_oracle_riesentour_split.py`) |
-| Wie selten ist es dort? | Eine Lösung mit k Routen, davon j mit mindestens zwei Kunden, entsteht aus genau **k!·2^j** Reihenfolgen. Median der Bänder: 48 von 40 320 (**0,119 %**) bei n = 8, 48 von 362 880 (**0,013 %**) bei n = 9. Bei eindeutigem Optimum stimmt die Zählung mit der Formel überein (148 von 150 Testinstanzen); bei Gleichständen gibt es mehr |
+| Liegt das Optimum unter den Reihenfolgen? | Ja: Das Minimum über alle n! Reihenfolgen ist in **80 von 80** Instanzen bei n = 8 und in **80 von 80** bei n = 9 gleich dem exakten Optimum (je 4 Zellen × 20 Instanzen). An kleinen Instanzen (n = 6) unabhängig bestätigt gegen eine Aufzählung aller Zerlegungen und Reihenfolgen (`tests/test_oracle_riesentour_split.py`) |
+| Wie selten ist es dort? | Die Routen einer Lösung mit k Routen, davon j mit mindestens zwei Kunden, lassen sich auf genau **k!·2^j** Arten hintereinanderhängen; jede dieser Reihenfolgen hat einen Split, der höchstens so teuer ist wie die Lösung. Median der Bänder: 48 von 40 320 (**0,119 %**) bei n = 8, 48 von 362 880 (**0,013 %**) bei n = 9. Bei eindeutigem Optimum stimmt die Zählung mit der Formel überein (148 von 150 Testinstanzen); bei Gleichständen gibt es mehr |
 | Ist die kürzeste Rundreise eine gute Riesentour? | Meist nicht: Ihr Split ist bei n = 8 in **8 / 4 / 4 / 2** von 20 Instanzen optimal (Zellen: zufällig und Gruppen, Depot in der Mitte und in der Ecke), bei n = 9 in **5 / 4 / 1 / 4**. Abstand zum Optimum im Median 0,1 / 2,9 / 3,1 / 2,6 % (n = 8) und 0,9 / 1,7 / 4,3 / 1,6 % (n = 9), im Maximum 5,3 / 30,0 / 18,0 / 24,2 % und 7,2 / 17,9 / 21,9 / 25,6 % |
 | Wie viele Reihenfolgen sind besser als die Rundreise? | Median je Zelle 0,03 bis 4,01 %; im Maximum **73,5 %** aller Reihenfolgen (n = 9, Gruppen, Depot in der Ecke) |
 | „Füllen bis voll“ auf der Rundreise | Median 5,5 / 9,9 / 6,2 / 9,4 % über dem Optimum (n = 8), 2,5 / 2,7 / 5,9 / 2,8 % (n = 9), Maximum 58,8 %. Der Split ist nie schlechter als „Füllen bis voll“ auf derselben Reihenfolge (`tests/test_properties.py`) |
 | Handbeispiel (Voreinstellung, 6 Kunden, kleine Karte, Depot in der Ecke, Seed 11) | Optimum 63,30 (2 Routen); kürzeste Rundreise 47,22 lang, ihr Split 68,38 in 3 Routen: **+8,0 %**; **30 von 720** Reihenfolgen (4,2 %) sind besser; **8 von 720** treffen das Optimum (2!·2²); „Füllen bis voll“ 71,11 (4,0 % mehr als der Split) |
-| Von Hand nachgerechnetes Beispiel (`tests/conftest.py`, Depot (0,0), Kapazität 7) | Optimum 44,36 (Routen (1 4), (2 6 3 5)); Rundreise 38,24; ihr Split 47,19 in 3 Routen (+6,4 %), „Füllen bis voll“ 55,26 (+24,6 %), Nächster Nachbar + Split 49,45 (+11,5 %); 8 von 720 Reihenfolgen treffen das Optimum, 16 sind besser als die Rundreise |
+| Von Hand nachgerechnetes Beispiel (`tests/conftest.py`, Depot (0,0), Kapazität 7) | Optimum 44,36 (Routen (1 4), (2 6 3 5)); Rundreise 38,24; ihr Split 47,19 in 3 Routen (+6,4 %), „Füllen bis voll“ 55,26 (+24,6 %), wenn die Rundreise als 5 1 4 3 6 2 gelesen wird (in der Leserichtung 2 6 3 4 1 5 der Demo: 47,19), Nächster Nachbar + Split 49,45 (+11,5 %); 8 von 720 Reihenfolgen treffen das Optimum, 16 sind besser als die Rundreise |
 | Der Split hängt nicht von der Leserichtung ab | Dieselbe Reihenfolge rückwärts gelesen hat denselben Split (`test_split_of_the_tour_uses_three_routes`); „Füllen bis voll“ dagegen kann sich ändern |
 
 ## Ehrliche Grenzen
 
-- Alle Aussagen gelten für **höchstens 9 Kunden** und sagen nichts über große Instanzen. Dass Savings die perfekte Riesentour mit Split schlagen kann, wurde in der Vormessung bei n = 12 gesehen, ist aber nicht Gegenstand dieser Demo (Stück 4 der Linie).
+- Alle Aussagen gelten für **höchstens 9 Kunden** und sagen nichts über große Instanzen. Dass Savings den Split der kürzesten Rundreise schlagen kann, wurde in der Vormessung bei n = 12 gesehen, ist aber nicht Gegenstand dieser Demo (Stück 4 der Linie).
 - Die Instanzen stammen aus einem Eigenbau nach grobem Muster, nicht aus den Benchmarkinstanzen der Literatur.
 - Der Maßstab ist das exakte Optimum bei unbegrenzter Flotte; mit höchstens B Fahrzeugen ändert sich der Split.
 - Die kürzeste Rundreise ist unter gleich langen eine feste (Held–Karp); „Füllen bis voll“ hängt von der Leserichtung ab, die Demo liest in der lexikographisch kleineren Richtung.
@@ -84,7 +84,7 @@ Alle Zahlen sind Messungen an den Instanzen dieser Demo (feste Seeds), nachgerec
 
 ## Tests
 
-300 Tests. Laufzeit lokal etwa ein bis zwei Minuten, davon etwa 20 Sekunden für die frische Nachrechnung einer Zelle von n = 9.
+300 Tests. Laufzeit lokal rund drei Minuten (gemessen: 203 Sekunden auf einem ausgelasteten Rechner), davon etwa 20 Sekunden für die frische Nachrechnung einer Zelle von n = 9.
 
 ## Dateistruktur
 
